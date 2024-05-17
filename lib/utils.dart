@@ -38,7 +38,7 @@ double angle(PoseLandmark firstLandmark, PoseLandmark midLandmark,PoseLandmark l
 }
 
 PushUpState? isPushUp(double angleElbow, PushUpState? current) {
-  final tresholdElbow = 60.0;
+  final tresholdElbow = 80.0;
   final tresholdElbowExtension = 160.0;
 
   if(current == PushUpState.neutral && angleElbow > tresholdElbowExtension && angleElbow < 180.0) {
