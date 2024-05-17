@@ -18,4 +18,9 @@ class PushUpCounter extends Cubit<PushUpState>{
     counter++;
     emit(state);
   }
+
+  void reset(){
+    counter = 0;
+    emit(state);
+  }
 }

@@ -32,7 +32,7 @@ class _PoseDetectorViewState extends State<PoseDetectorView> {
   @override
   Widget build(BuildContext context) {
     return DetectorView(
-      posePainter: _posePainter!,
+      posePainter: _posePainter,
       title: 'Pose Detector',
       customPaint: _customPaint,
       text: _text,

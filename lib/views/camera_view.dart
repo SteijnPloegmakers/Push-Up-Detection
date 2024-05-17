@@ -96,6 +96,7 @@ class _CameraViewState extends State<CameraView> {
       if(p1 != null && p2 != null && p3 != null) {
         final rtaAngle = utils.angle(p1!, p2!, p3!);
         final rta = utils.isPushUp(rtaAngle, bloc.state);
+        print('Angle: ${rtaAngle.toStringAsFixed(2)} ');
 
         if(rta != null) {
           if(rta == PushUpState.init) {
@@ -141,12 +142,52 @@ class _CameraViewState extends State<CameraView> {
                     child: widget.customPaint,
                   ),
           ),
+          _counterWidget(),
           _backButton(),
           _switchLiveCameraToggle(),
           _detectionViewModeToggle(),
           _zoomControl(),
           _exposureControl(),
         ],
+      ),
+    );
+  }
+
+  Widget _counterWidget() {
+    final bloc = BlocProvider.of<PushUpCounter>(context);
+    return Positioned(
+      left: 0,
+      top: 50,
+      right: 0,
+      child: Container(
+        width: 70,
+        child: Column(
+          children: [
+            const Text('Counter',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            Container(
+              width: 70,
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                border: Border.all(color: Colors.white.withOpacity(0.4), width: 4.0),
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Text('${bloc.counter}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -159,7 +200,10 @@ class _CameraViewState extends State<CameraView> {
           width: 50.0,
           child: FloatingActionButton(
             heroTag: Object(),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              BlocProvider.of<PushUpCounter>(context).reset();
+              Navigator.of(context).pop();
+            }, 
             backgroundColor: Colors.black54,
             child: Icon(
               Icons.arrow_back_ios_outlined,
