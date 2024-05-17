@@ -18,6 +18,8 @@ class _PoseDetectorViewState extends State<PoseDetectorView> {
   bool _isBusy = false;
   CustomPaint? _customPaint;
   String? _text;
+  PosePainter? _posePainter;
+
   var _cameraLensDirection = CameraLensDirection.back;
 
   @override
@@ -30,6 +32,7 @@ class _PoseDetectorViewState extends State<PoseDetectorView> {
   @override
   Widget build(BuildContext context) {
     return DetectorView(
+      posePainter: _posePainter!,
       title: 'Pose Detector',
       customPaint: _customPaint,
       text: _text,
@@ -56,6 +59,7 @@ class _PoseDetectorViewState extends State<PoseDetectorView> {
         _cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
+      _posePainter = painter;
     } else {
       _text = 'Poses found: ${poses.length}\n\n';
       // TODO: set _customPaint to draw landmarks on top of image

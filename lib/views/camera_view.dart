@@ -3,19 +3,26 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:push_up_detection/models/push_up_model.dart';
+
+import '../painters/pose_painter.dart';
+import '../utils.dart' as utils;
 
 class CameraView extends StatefulWidget {
   CameraView(
       {Key? key,
       required this.customPaint,
       required this.onImage,
+      required this.posePainter,
       this.onCameraFeedReady,
       this.onDetectorViewModeChanged,
       this.onCameraLensDirectionChanged,
       this.initialCameraLensDirection = CameraLensDirection.back})
       : super(key: key);
 
+  final PosePainter? posePainter;
   final CustomPaint? customPaint;
   final Function(InputImage inputImage) onImage;
   final VoidCallback? onCameraFeedReady;
@@ -39,6 +46,10 @@ class _CameraViewState extends State<CameraView> {
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
 
+  PoseLandmark? p1;
+  PoseLandmark? p2;
+  PoseLandmark? p3;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +70,45 @@ class _CameraViewState extends State<CameraView> {
     if (_cameraIndex != -1) {
       _startLiveFeed();
     }
+  }
+
+ @override
+  void didUpdateWidget(covariant CameraView oldWidget) {
+    if(widget.customPaint != oldWidget.customPaint) {
+      if (widget.customPaint == null) {
+        return;
+      }
+
+      final bloc = BlocProvider.of<PushUpCounter>(context);
+
+      for(final pose in widget.posePainter!.poses) {
+        PoseLandmark getPoseLandmark(PoseLandmarkType type1) {
+          final PoseLandmark joint1 = pose.landmarks[type1]!;
+          return joint1;
+        }
+
+        p1 = getPoseLandmark(PoseLandmarkType.rightShoulder);
+        p2 = getPoseLandmark(PoseLandmarkType.rightElbow);
+        p3 = getPoseLandmark(PoseLandmarkType.rightWrist);
+      }
+
+      //verify if the pose is valid
+      if(p1 != null && p2 != null && p3 != null) {
+        final rtaAngle = utils.angle(p1!, p2!, p3!);
+        final rta = utils.isPushUp(rtaAngle, bloc.state);
+
+        if(rta != null) {
+          if(rta == PushUpState.init) {
+            bloc.setPushUpState(rta);
+          } 
+          else if (rta == PushUpState.complete) {
+            bloc.increment();
+            bloc.setPushUpState(PushUpState.neutral); //reinstate pushup state
+          }
+        }
+      }
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

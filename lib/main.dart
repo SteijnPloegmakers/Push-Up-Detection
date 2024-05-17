@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'models/push_up_model.dart';
 import 'views/pose_detection_view.dart';
 
 void main() => runApp(const MyApp());
@@ -9,9 +11,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Home()
+    return BlocProvider(
+      create: (context) => PushUpCounter(),
+      child: MaterialApp(
+        title: 'Material App',
+        home: Home()
+      ),
     );
   }
 }
