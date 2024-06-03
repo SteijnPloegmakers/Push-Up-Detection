@@ -10,6 +10,7 @@ import 'package:push_up_detection/widgets/counter_widget.dart';
 
 import '../painters/pose_painter.dart';
 import '../utils.dart' as utils;
+import '../widgets/back_button_widget.dart';
 
 class CameraView extends StatefulWidget {
   CameraView(
@@ -143,8 +144,8 @@ class _CameraViewState extends State<CameraView> {
                     child: widget.customPaint,
                   ),
           ),
-          CounterWidget(),
-          _backButton(),
+          const CounterWidget(),
+          BackButtonWidget(),
           _switchLiveCameraToggle(),
           _zoomControl(),
           _exposureControl(),
@@ -152,28 +153,6 @@ class _CameraViewState extends State<CameraView> {
       ),
     );
   }
-
-
-  Widget _backButton() => Positioned(
-        top: 40,
-        left: 8,
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: FloatingActionButton(
-            heroTag: Object(),
-            onPressed: () {
-              BlocProvider.of<PushUpCounter>(context).reset();
-              Navigator.of(context).pop();
-            }, 
-            backgroundColor: Colors.black54,
-            child: Icon(
-              Icons.arrow_back_ios_outlined,
-              size: 20,
-            ),
-          ),
-        ),
-      );
 
   Widget _switchLiveCameraToggle() => Positioned(
         bottom: 8,
