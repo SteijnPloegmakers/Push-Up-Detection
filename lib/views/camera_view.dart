@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:push_up_detection/models/push_up_model.dart';
+import 'package:push_up_detection/widgets/counter_widget.dart';
 
 import '../painters/pose_painter.dart';
 import '../utils.dart' as utils;
@@ -142,10 +143,9 @@ class _CameraViewState extends State<CameraView> {
                     child: widget.customPaint,
                   ),
           ),
-          _counterWidget(),
+          CounterWidget(),
           _backButton(),
           _switchLiveCameraToggle(),
-          _detectionViewModeToggle(),
           _zoomControl(),
           _exposureControl(),
         ],
@@ -153,44 +153,6 @@ class _CameraViewState extends State<CameraView> {
     );
   }
 
-  Widget _counterWidget() {
-    final bloc = BlocProvider.of<PushUpCounter>(context);
-    return Positioned(
-      left: 0,
-      top: 50,
-      right: 0,
-      child: Container(
-        width: 70,
-        child: Column(
-          children: [
-            const Text('Counter',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            Container(
-              width: 70,
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                border: Border.all(color: Colors.white.withOpacity(0.4), width: 4.0),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Text('${bloc.counter}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _backButton() => Positioned(
         top: 40,
@@ -208,24 +170,6 @@ class _CameraViewState extends State<CameraView> {
             child: Icon(
               Icons.arrow_back_ios_outlined,
               size: 20,
-            ),
-          ),
-        ),
-      );
-
-  Widget _detectionViewModeToggle() => Positioned(
-        bottom: 8,
-        left: 8,
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: FloatingActionButton(
-            heroTag: Object(),
-            onPressed: widget.onDetectorViewModeChanged,
-            backgroundColor: Colors.black54,
-            child: Icon(
-              Icons.photo_library_outlined,
-              size: 25,
             ),
           ),
         ),
